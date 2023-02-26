@@ -10,6 +10,7 @@ $(document).ready(function () {
             var reader = new FileReader();
             reader.onload = function (e) {
                 $('#imagePreview').css('background-image', 'url(' + e.target.result + ')');
+                console.log(e.target.result);
                 $('#imagePreview').hide();
                 $('#imagePreview').fadeIn(650);
             }
@@ -17,6 +18,8 @@ $(document).ready(function () {
         }
     }
     $("#imageUpload").change(function () {
+        $('.upload-label').css('height','40px');
+        $('.img-pic').css('height','15px', 'width','5px');
         $('.image-section').show();
         $('#btn-predict').show();
         $('#result').text('');
@@ -46,6 +49,7 @@ $(document).ready(function () {
                 $('.loader').hide();
                 $('#result').fadeIn(600);
                 $('#result').text(' Result:  ' + data);
+                $('#result').css(' padding-bottom  ' , '50px');
                 console.log('Success!');
             },
         });

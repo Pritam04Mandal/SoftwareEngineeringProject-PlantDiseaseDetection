@@ -10,21 +10,47 @@
     <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdn.bootcss.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <link href="{{ url_for('static', filename='css/main.css') }}" rel="stylesheet">      
+    <link href="{{ url_for('static', filename='css/project.css') }}" rel="stylesheet">      
 </head>
 
 <body>
-    <nav class="navbar navbar-dark bg-dark">
+    <!-- <nav class="navbar navbar-dark bg-dark">
         <div class="container">
             <a class="navbar-brand" href="#">AI Demo</a>
             <button class="btn btn-outline-secondary my-2 my-sm-0" type="submit">Help</button>
         </div>
-    </nav>
-    <div class="container">
-        <div id="content" style="margin-top:2em">{% block content %}{% endblock %}</div>
-    </div>
+    </nav>-->
+    <center><h1 style="height:50px;font-style:italic;background-color: greenyellow;margin:0px">Leaf Curo</h1>
+    </center>
+    
+    <nav>
+        <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Services</a></li>
+            <li><a href="#">Contact</a></li>
+            <li class="image"><a style="padding-top:0px;" href="#"><img src="img/farmer-image.png" alt="Logo"></a></li>
+            <li style="float:right"><a href="signup.html">Sign-Up</a></li>
+            <li style="float:right"><a  href="login.html">Log-In</a></li>
+          
+        </ul>
+      </nav>
+      <div id="mySidenav" class="sidenav">
+        <!-- <a href="javascript:void(0)" >&times;</a> -->
+        <a href="#">About</a>
+        <a href="#">Services</a>
+        <a href="#">Clients</a>
+        <a href="#">Contact</a>
+      </div>
+      <center>
+      <div class="container">
+          <div id="content" style="margin-top:0.5em">{% block content %}{% endblock %}</div>
+      </div> 
+    </center>
 </body>
 
-<footer>
+<footer style=" margin-bottom: 0;background-color: black;color: beige;">
+    Developed by Farmer Supporters and Rising and Shining Coders
     <script src="{{ url_for('static', filename='js/main.js') }}" type="text/javascript"></script>    
 </footer>
 
