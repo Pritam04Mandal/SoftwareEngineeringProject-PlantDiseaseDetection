@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Thu Jun 11 22:34:20 2020
-
-@author: Krish Naik
-"""
-
 from __future__ import division, print_function
 # coding=utf-8
 import sys
@@ -34,6 +27,7 @@ from datetime import datetime
 import sqlite3
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
+from flask import session
 #from gevent.pywsgi import WSGIServer
 
 # Define a flask app
@@ -155,7 +149,7 @@ def login():
 def logcheck():
     ac=request.form['ans']
     pas=request.form['password']
-    check=bcrypt.generate_password_hash(pas)
+    # check=bcrypt.generate_password_hash(pas)
     conn=sqlite3.connect('instance/users.db')
     con=conn.cursor()
     err=False
