@@ -5,7 +5,8 @@ import tensorflow as tf
 import numpy as np
 import sqlite3
 from flask_bcrypt import Bcrypt
-
+from PIL import Image
+from rembg import remove
 
 from tensorflow.compat.v1 import ConfigProto
 from tensorflow.compat.v1 import InteractiveSession
@@ -153,9 +154,23 @@ def upload():
         file_path = os.path.join(
             basepath, 'uploads', secure_filename(f.filename))
         f.save(file_path)
-
+        # removing the background
+        inpt=Image.open(file_path)
+        if(".jpg" in f.filename):
+            temp=f.filename.replace(".jpg",".png")
+        else:
+            temp=f.filename
+        new_path=os.path.join(basepath,'uploads',secure_filename(temp))
+        inpt.save(new_path)
+        inpt=Image.open(new_path)
+        output=remove(inpt)
+        """ fpp=str(file_path)
+        if(".jpg" in fpp):
+            print(fpp)
+            fpp.replace(".jpg",".png") """
+        output.save(new_path)
         # Make prediction
-        preds = model_predict(file_path, model)
+        preds = model_predict(new_path, model)
         result=preds
         return result
     return None

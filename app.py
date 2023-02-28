@@ -7,7 +7,8 @@ import re
 import numpy as np
 import tensorflow as tf
 import tensorflow as tf
-
+from PIL import Image
+from rembg import remove
 from tensorflow.compat.v1 import ConfigProto
 from tensorflow.compat.v1 import InteractiveSession
 
@@ -112,16 +113,10 @@ def upload():
         file_path = os.path.join(
             basepath, 'uploads', secure_filename(f.filename))
         f.save(file_path)
-
-        # Make prediction
-        preds = model_predict(file_path, model)
-        result=preds
-        return result
-    return None
-
-@app.route('/signup.html', methods=['GET', 'POST'])
-def signup():
-    if request.method == 'POST':
+        # input=Image.open(file_path)
+        # output=remove(input)
+        # input.close()
+        # output.save(file_path)
         email=request.form['email']
         user=request.form['username']
         pas=request.form['password']
