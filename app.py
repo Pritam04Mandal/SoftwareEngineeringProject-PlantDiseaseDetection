@@ -48,17 +48,6 @@ class Members(db.Model):
     password=db.Column(db.String(50), nullable=False)
     date_registered=db.Column(db.DateTime, default=datetime.utcnow)
 
-    # @property
-    # def password(self):
-    #     raise AttributeError('password is not a readable attribute')
-
-    # @password.setter
-    # def password(self, password):
-    #     self.password_hash = generate_password_hash(password)
-
-    # def verify_password(self, password):
-    #     return check_password_hash(self.password, password)
-
 
 # db.create_all()
 
