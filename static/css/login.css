@@ -16,7 +16,6 @@ font-family: 'Roboto Condensed', sans-serif; */
 .containers{
     width: 100vw;
     height: 100vh;
-    /* background: linear-gradient(145deg, rgb(135,129,255), rgb(255 110 110), rgb(243, 243, 65)); */
     background-image: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzCnsnWT0HLY8Au6ZmuNzGCfgTuhvh8Q2HwnK1W1PDJA&s");
     position: relative;
     background-repeat: no-repeat;

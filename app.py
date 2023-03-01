@@ -33,23 +33,34 @@ from flask import session
 
 # Define a flask app
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///Users.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.secret_key = 'secret_key'
 app.app_context().push()
 
-# Initialising database Users.db
-app.config['SQLALCHEMY_DATABASE_URI']="sqlite:///Users.db"
-app.config['SECRETKEY']="plantdiseaseproject"
-db=SQLAlchemy(app)
+db = SQLAlchemy(app)
 bcrypt=Bcrypt(app)
 
-# Creating table members
+
 class Members(db.Model):
     email=db.Column(db.String(50), nullable=False, primary_key=True)
     username=db.Column(db.String(50), nullable=False)
     password=db.Column(db.String(50), nullable=False)
     date_registered=db.Column(db.DateTime, default=datetime.utcnow)
 
-    def __repr__(self) ->str:
-        return f"{self.email}"
+    # @property
+    # def password(self):
+    #     raise AttributeError('password is not a readable attribute')
+
+    # @password.setter
+    # def password(self, password):
+    #     self.password_hash = generate_password_hash(password)
+
+    # def verify_password(self, password):
+    #     return check_password_hash(self.password, password)
+
+
+db.create_all()
 
 # Model saved with Keras model.save()
 MODEL_PATH ='InceptionModel.h5'
@@ -97,11 +108,6 @@ def model_predict(img_path, model):
     return preds
 
 
-@app.route('/', methods=['GET'])
-def index():
-    # Main page
-    return render_template('index.html')
-
 @app.route('/predict', methods=['GET', 'POST'])
 def upload():
     if request.method == 'POST':
@@ -135,35 +141,86 @@ def upload():
         return render_template('index.html', entry=entry)
     return render_template('signup.html')
 
-@app.route('/login.html', methods=['GET', 'POST'])
-def login():
-    return render_template('login.html')
+
+def Members_exists(email, username):
+    # check if the Members exists in the database
+    # return True if the Members exists, False otherwise
+    user = Members.query.filter_by(email=email).first(
+    ) or Members.query.filter_by(username=username).first()
+    return user is not None
 
 
-@app.route('/loginval', methods=['GET', 'POST'])
-def logcheck():
-    ac=request.form['ans']
-    pas=request.form['password']
-    # check=bcrypt.generate_password_hash(pas)
+def create_Members(email, username, password):
+    # create a new Members with the given email, username, and password
+    hashed_pas=bcrypt.generate_password_hash(password)
+    user = Members(email=email, username=username, password=hashed_pas)
+    # user.password = password
+    db.session.add(user)
+    db.session.commit()
+
+
+def check_password(username, password):
+    # check if the password is correct for the given username
+    # return True if the password is correct, False otherwise
+    user = Members.query.filter_by(username=username).first()
+    if user is None:
+        return False
     conn=sqlite3.connect('instance/users.db')
     con=conn.cursor()
-    err=False
-    stat=f"SELECT * FROM members WHERE username='{ac}'"
+    stat=f"DELETE FROM members WHERE username='Ananya'"
     con.execute(stat)
-    if con.fetchone():
-        stat=f"SELECT password FROM members WHERE username='{ac}'"
-        con.execute(stat)
-        if bcrypt.check_password_hash(con.fetchone()[0], pas):
-            return render_template('index.html')
-        else:
-            err=True
-    else:
-        err=True
-    return render_template('login.html', err=err)
+    stat=f"SELECT password FROM members WHERE username='{username}'"
+    con.execute(stat)
+    if bcrypt.check_password_hash(con.fetchone()[0], password):
+        return True
+    return False
 
-# @app.route('/home.html')
-# def home():
-#     return render_template('home.html')
+
+@app.route('/')
+def home():
+    if 'username' in session:
+        return render_template('index.html', username=session['username'])
+    else:
+        # return redirect(url_for('login.html'))
+        return render_template('login.html')
+
+
+@app.route('/login.html', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        if check_password(username, password):
+            session['username'] = username
+            return redirect(url_for('home'))
+        else:
+            return render_template('login.html', error='Invalid username or password')
+    else:
+        return render_template('login.html')
+
+
+@app.route('/signup.html', methods=['GET', 'POST'])
+def signup():
+    if request.method == 'POST':
+        email = request.form['email']
+        username = request.form['username']
+        password = request.form['password']
+        if Members_exists(email, username):
+            return render_template('signup.html', error='Email or username already exists')
+        else:
+            create_Members(email, username, password)
+            session['username'] = username
+            return redirect(url_for('home'))
+    else:
+        return render_template('signup.html')
+
+
+@app.route('/logout')
+def logout():
+    session.pop('username', None)
+    return render_template('login.html')
+    # return redirect(url_for('login.html'))
+
 
 if __name__ == '__main__':
-    app.run(port=5001,debug=True)
+    app.run(debug=True)
