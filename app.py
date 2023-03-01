@@ -154,7 +154,6 @@ def create_Members(email, username, password):
     # create a new Members with the given email, username, and password
     hashed_pas=bcrypt.generate_password_hash(password)
     user = Members(email=email, username=username, password=hashed_pas)
-    # user.password = password
     db.session.add(user)
     db.session.commit()
 
@@ -181,7 +180,6 @@ def home():
     if 'username' in session:
         return render_template('index.html', username=session['username'])
     else:
-        # return redirect(url_for('login.html'))
         return render_template('login.html')
 
 
@@ -219,7 +217,6 @@ def signup():
 def logout():
     session.pop('username', None)
     return render_template('login.html')
-    # return redirect(url_for('login.html'))
 
 
 if __name__ == '__main__':

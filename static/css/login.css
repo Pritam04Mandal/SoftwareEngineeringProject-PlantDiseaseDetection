@@ -16,7 +16,7 @@ font-family: 'Roboto Condensed', sans-serif; */
 .containers{
     width: 100vw;
     height: 100vh;
-    background-image: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzCnsnWT0HLY8Au6ZmuNzGCfgTuhvh8Q2HwnK1W1PDJA&s");
+    background-image: url("https://images.unsplash.com/photo-1603127047787-f7919173149c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NXx8ZGFyayUyMGxhbmRzY2FwZXxlbnwwfHwwfHw%3D&w=1000&q=80");
     position: relative;
     background-repeat: no-repeat;
     background-size: cover;
@@ -49,7 +49,7 @@ h2::before{
     width: 225px;
     height: 5px;
     border-radius: 50px;
-    background: linear-gradient(45deg, rgb(33, 236, 213), rgb(243, 131, 33));
+    background: linear-gradient(45deg, rgb(33, 104, 236), rgb(243, 131, 33));
     bottom: -8px;
 }
 
