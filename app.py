@@ -60,7 +60,7 @@ class Members(db.Model):
     #     return check_password_hash(self.password, password)
 
 
-db.create_all()
+# db.create_all()
 
 # Model saved with Keras model.save()
 MODEL_PATH ='InceptionModel.h5'
