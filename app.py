@@ -108,27 +108,26 @@ def upload():
         file_path = os.path.join(
             basepath, 'uploads', secure_filename(f.filename))
         f.save(file_path)
-        # input=Image.open(file_path)
-        # output=remove(input)
-        # input.close()
-        # output.save(file_path)
-        email=request.form['email']
-        user=request.form['username']
-        pas=request.form['password']
-        conn=sqlite3.connect('instance/users.db')
-        con=conn.cursor()
-        stat=f"SELECT * FROM members WHERE username='{user}' or email='{email}'"
-        con.execute(stat)
-        if con.fetchone():
-            return render_template('signup.html', err=True)
-        hashed_pas=bcrypt.generate_password_hash(pas)
-        e=Members(email=email, username=user, password=hashed_pas)
-        db.session.add(e)
-        db.session.commit()
-        entry=Members.query.all()
-        print('Abc')
-        return render_template('index.html', entry=entry)
-    return render_template('signup.html')
+        # removing the background
+        inpt=Image.open(file_path)
+        if(".jpg" in f.filename):
+            temp=f.filename.replace(".jpg",".png")
+        else:
+            temp=f.filename
+        new_path=os.path.join(basepath,'uploads',secure_filename(temp))
+        inpt.save(new_path)
+        inpt=Image.open(new_path)
+        output=remove(inpt)
+        """ fpp=str(file_path)
+        if(".jpg" in fpp):
+            print(fpp)
+            fpp.replace(".jpg",".png") """
+        output.save(new_path)
+        # Make prediction
+        preds = model_predict(new_path, model)
+        result=preds
+        return result
+    return None
 
 
 def Members_exists(email, username):
@@ -169,7 +168,7 @@ def home():
     if 'username' in session:
         return render_template('index.html', username=session['username'])
     else:
-        return render_template('login.html')
+        return render_template('first.html')
 
 
 @app.route('/login.html', methods=['GET', 'POST'])
@@ -205,7 +204,7 @@ def signup():
 @app.route('/logout')
 def logout():
     session.pop('username', None)
-    return render_template('login.html')
+    return render_template('first.html')
 
 
 if __name__ == '__main__':
