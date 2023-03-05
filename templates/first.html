@@ -5,30 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>AI Demo</title>
-    <link href="https://cdn.bootcss.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.bootcss.com/popper.js/1.12.9/umd/popper.min.js"></script>
     <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://cdn.bootcss.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <link href="{{ url_for('static', filename='css/main.css') }}" rel="stylesheet">      
     <link href="{{ url_for('static', filename='css/project.css') }}" rel="stylesheet">      
 </head>
 
 <body>
-    <!-- <nav class="navbar navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand" href="#">AI Demo</a>
-            <button class="btn btn-outline-secondary my-2 my-sm-0" type="submit">Help</button>
-        </div>
-    </nav>-->
-    <center><h1 style="height:50px;font-style:italic;background-color: greenyellow;margin:0px">Leaf Curo</h1>
+    <center><h1 style="height:50px;font-style:italic;background-color: #32CD32;margin:0px">Leaf Curo</h1>
     </center>
     
-    <nav>
+    <nav style="background-color: #e86e11;">
         <ul>
-            <li><a href="#">Home</a></li>
-            <li><a href="#">About</a></li>
-            <li><a href="#">Services</a></li>
-            <li><a href="#">Contact</a></li>
             <li style="float:right"><a href="signup.html">Sign In</a></li>
             <li style="float:right"><a  href="login.html">Log-In</a></li>
           
@@ -45,7 +33,7 @@
       <div class="container">
           <div id="content" style="margin-top:0.5em">
             <div class="img-upload-section">
-                <h2>Image Classifier</h2>
+                <h4>Upload your image here</h4>
                 <form id="upload-file" method="post" enctype="multipart/form-data">
                     <label for="imageUpload" class="upload-label">
                         <input type="file" name="file" id="imageUpload" accept=".png, .jpg, .jpeg">

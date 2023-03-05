@@ -40,7 +40,7 @@ app.app_context().push()
 
 db = SQLAlchemy(app)
 bcrypt=Bcrypt(app)
-
+uid=None
 
 class Members(db.Model):
     email=db.Column(db.String(50), nullable=False, primary_key=True)
@@ -60,6 +60,7 @@ model = load_model(MODEL_PATH)
 def model_predict(img_path, model):
     print(img_path)
     img = image.load_img(img_path, target_size=(224, 224))
+
 
     # Preprocessing the image
     x = image.img_to_array(img)
@@ -94,7 +95,16 @@ def model_predict(img_path, model):
         preds="The Disease is Tomato___Tomato_mosaic_virus"
     elif preds==9:
         preds="The Disease is Tomato___healthy"
-    return preds
+
+    # Saving the search history in the database
+    # with open(img_path, 'rb') as f:
+    #     img=f.read()
+    #     conn=sqlite3.connect('instance/users.db')
+    #     con=conn.cursor()
+    #     stat=f"INSERT INTO history(user, image_url, disease, date_time) VALUES( {uid}, {sqlite3.Binary(img_path)}, {preds}, {datetime.now()})"
+    #     con.execute(stat) 
+
+    return preds 
 
 
 @app.route('/predict', methods=['GET', 'POST'])
@@ -178,9 +188,10 @@ def login():
         password = request.form['password']
         if check_password(username, password):
             session['username'] = username
+            uid=username
             return redirect(url_for('home'))
         else:
-            return render_template('login.html', error='Invalid username or password')
+            return render_template('login.html', err=True)
     else:
         return render_template('login.html')
 
@@ -192,14 +203,19 @@ def signup():
         username = request.form['username']
         password = request.form['password']
         if Members_exists(email, username):
-            return render_template('signup.html', error='Email or username already exists')
+            return render_template('signup.html', err=True)
         else:
             create_Members(email, username, password)
             session['username'] = username
+            uid=username
             return redirect(url_for('home'))
     else:
         return render_template('signup.html')
 
+
+@app.route('/profile.html')
+def profile():
+    return render_template('profile.html')
 
 @app.route('/logout')
 def logout():

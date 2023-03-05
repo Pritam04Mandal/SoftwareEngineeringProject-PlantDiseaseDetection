@@ -4,42 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>AI Demo</title>
-    <link href="https://cdn.bootcss.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <title>Leaf Curo</title>
     <script src="https://cdn.bootcss.com/popper.js/1.12.9/umd/popper.min.js"></script>
     <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://cdn.bootcss.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <link href="{{ url_for('static', filename='css/main.css') }}" rel="stylesheet">      
     <link href="{{ url_for('static', filename='css/project.css') }}" rel="stylesheet">      
 </head>
 
 <body>
-    <!-- <nav class="navbar navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand" href="#">AI Demo</a>
-            <button class="btn btn-outline-secondary my-2 my-sm-0" type="submit">Help</button>
-        </div>
-    </nav>-->
-    <center><h1 style="height:50px;font-style:italic;background-color: greenyellow;margin:0px">Leaf Curo</h1>
-    </center>
+    <!-- <center><h1 style="height:50px;font-style:italic;background-color: 4C9A2A; margin:0px;">Leaf Curo</h1>
+    </center> -->
+    <div class="nav-top">
+        <h1>Leaf Curo</h1>
+    </div>
     
-    <nav>
-        <ul>
-            <li><a href="#">Home</a></li>
-            <li><a href="#">About</a></li>
-            <li><a href="#">Services</a></li>
-            <li><a href="#">Contact</a></li>
-            <li class="image"><a style="padding-top:0px;" href="#"><img src="https://cdn-icons-png.flaticon.com/512/190/190683.png" alt="Logo"></a></li>
-            <li style="float:right"><a href="logout">Logout</a></li>
-            <!-- <li style="float:right"><a  href="login.html">Log-In</a></li> -->
-          
-        </ul>
-      </nav>
-      <div id="mySidenav" class="sidenav">
+    <div id="mySidenav" class="sidenav"">
         <!-- <a href="javascript:void(0)" >&times;</a> -->
+        <a style="padding-top:0px;" href="profile.html"><img src="https://cdn-icons-png.flaticon.com/512/190/190683.png" alt="Logo" style="height: 70px;"></a>
+        <a href="logout" style="font-size: 15px; color: red;">Logout</a>
+        <a href="/">Home</a>
         <a href="#">About</a>
-        <a href="#">Services</a>
-        <a href="#">Clients</a>
+        <a href="https://icar.org.in/">ICAR</a>
+        <a href="https://www.indiastat.com/data/agriculture/tomato">Stats</a>
         <a href="#">Contact</a>
       </div>
       <center>
