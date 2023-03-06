@@ -58,3 +58,7 @@ input[type="number"] {
     height: 70px;
     width: 70px;
   }
+
+  .profile-pic :hover{
+    background-color: black;
+  }

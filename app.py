@@ -43,7 +43,8 @@ bcrypt=Bcrypt(app)
 uid=None
 
 class Members(db.Model):
-    email=db.Column(db.String(50), nullable=False, primary_key=True)
+    user_id=db.Column(db.Integer, primary_key=True)
+    email=db.Column(db.String(50), nullable=False)
     username=db.Column(db.String(50), nullable=False)
     password=db.Column(db.String(50), nullable=False)
     date_registered=db.Column(db.DateTime, default=datetime.utcnow)
@@ -56,6 +57,12 @@ MODEL_PATH ='InceptionModel.h5'
 
 # Load your trained model
 model = load_model(MODEL_PATH)
+
+def convertToBinaryData(filename):
+    
+    with open(filename, 'rb') as file:
+        blobData = file.read()
+    return blobData
 
 def model_predict(img_path, model):
     print(img_path)
@@ -76,33 +83,35 @@ def model_predict(img_path, model):
     preds = model.predict(x)
     preds=np.argmax(preds, axis=1)
     if preds==0:
-        preds="The Disease is Tomato___Bacterial_spot"
+        preds="The Disease is Tomato Bacterial_spot"
     elif preds==1:
-        preds="The Disease is Tomato___Early_blight"
+        preds="The Disease is Tomato Early_blight"
     elif preds==2:
-        preds="The Disease is Tomato___Late_blight"
+        preds="The Disease is Tomato Late_blight"
     elif preds==3:
-        preds="Te Disease is Tomato___Leaf_Mold"
+        preds="Te Disease is Tomato Leaf_Mold"
     elif preds==4:
-        preds="The Disease is Tomato___Septoria_leaf_spot"
+        preds="The Disease is Tomato Septoria_leaf_spot"
     elif preds==5:
-        preds="The Disease is Tomato___Spider_mites Two-spotted_spider_mite"
+        preds="The Disease is Tomato Spider_mites Two-spotted_spider_mite"
     elif preds==6:
-        preds="The Disease is Tomato___Target_Spot"
+        preds="The Disease is Tomato Target_Spot"
     elif preds==7:
-        preds="The Disease is Tomato___Tomato_Yellow_Leaf_Curl_Virus"
+        preds="The Disease is Tomato Tomato_Yellow_Leaf_Curl_Virus"
     elif preds==8:
-        preds="The Disease is Tomato___Tomato_mosaic_virus"
+        preds="The Disease is Tomato Tomato_mosaic_virus"
     elif preds==9:
-        preds="The Disease is Tomato___healthy"
+        preds="The Disease is Tomato healthy"
 
     # Saving the search history in the database
-    # with open(img_path, 'rb') as f:
-    #     img=f.read()
-    #     conn=sqlite3.connect('instance/users.db')
-    #     con=conn.cursor()
-    #     stat=f"INSERT INTO history(user, image_url, disease, date_time) VALUES( {uid}, {sqlite3.Binary(img_path)}, {preds}, {datetime.now()})"
-    #     con.execute(stat) 
+    conn=sqlite3.connect('instance/users.db')
+    con=conn.cursor()
+    sqlite_insert_blob_query = " INSERT INTO history (id_user, image_url, disease, date_time) VALUES (?, ?, ?, ?)"
+
+    empPhoto = convertToBinaryData(img_path)
+    data_tuple = (uid,empPhoto,preds, datetime.now())
+    con.execute(sqlite_insert_blob_query, data_tuple)
+    conn.commit()
 
     return preds 
 
@@ -111,7 +120,7 @@ def model_predict(img_path, model):
 def upload():
     if request.method == 'POST':
         # Get the file from post request
-        f = request.files['file']
+        f = request.files['file'] 
 
         # Save the file to ./uploads
         basepath = os.path.dirname(__file__)
@@ -164,8 +173,6 @@ def check_password(username, password):
         return False
     conn=sqlite3.connect('instance/users.db')
     con=conn.cursor()
-    stat=f"DELETE FROM members WHERE username='Ananya'"
-    con.execute(stat)
     stat=f"SELECT password FROM members WHERE username='{username}'"
     con.execute(stat)
     if bcrypt.check_password_hash(con.fetchone()[0], password):
@@ -188,7 +195,13 @@ def login():
         password = request.form['password']
         if check_password(username, password):
             session['username'] = username
-            uid=username
+            conn=sqlite3.connect('instance/users.db')
+            con=conn.cursor()
+            stat=f"SELECT user_id FROM members WHERE username='{username}'"
+            con.execute(stat)
+            global uid
+            uid=con.fetchone()[0]
+            print(uid)
             return redirect(url_for('home'))
         else:
             return render_template('login.html', err=True)
@@ -207,7 +220,12 @@ def signup():
         else:
             create_Members(email, username, password)
             session['username'] = username
-            uid=username
+            conn=sqlite3.connect('instance/users.db')
+            con=conn.cursor()
+            stat=f"SELECT user_id FROM members WHERE username='{username}'"
+            global uid
+            con.execute(stat)
+            uid=con.fetchone()[0]
             return redirect(url_for('home'))
     else:
         return render_template('signup.html')
@@ -215,7 +233,41 @@ def signup():
 
 @app.route('/profile.html')
 def profile():
-    return render_template('profile.html')
+    conn=sqlite3.connect('instance/users.db')
+    con=conn.cursor()
+    stat=f"SELECT * FROM profile WHERE userid='{uid}'"
+    con.execute(stat)
+    data = con.fetchall()
+    return render_template('profile.html', data=data)
+
+
+@app.route('/update_profile', methods=['GET', 'POST'])
+def update_profile():
+    if request.method == 'POST':
+        data = request.get_json()
+        uname = data[0]['name']
+        job = data[1]['job']
+        city = data[2]['city']
+        phone = data[3]['phone']
+        print(uname, job, city, phone)
+        if(uname==None or job==None or city==None):
+            return render_template('profile.html', err=True)
+        conn=sqlite3.connect('instance/users.db')
+        con=conn.cursor()
+        sq=f"DELETE FROM profile WHERE userid={uid}"
+        con.execute(sq)
+        sqlite_insert_blob_query = " INSERT INTO profile (userid, full_name, mobile_no, profession,city,pre_lang,pro_pic) VALUES (?, ?, ?, ?, ?, ?, ?)"
+        empPhoto = convertToBinaryData("C:/Users/Sony/Documents/SoftwareEngineeringProject-PlantDiseaseDetection/img/farmer-image.png")
+        print(uid) 
+        data_tuple = (uid,uname, phone, job,city,"ENGLISH",empPhoto)
+        con.execute(sqlite_insert_blob_query, data_tuple)
+        conn.commit()
+        stat=f"SELECT * FROM profile WHERE userid='{uid}'"
+        con.execute(stat)
+        data = con.fetchall()
+        return render_template('profile.html', data=data)
+    else:
+        return render_template('signup.html')
 
 @app.route('/logout')
 def logout():
