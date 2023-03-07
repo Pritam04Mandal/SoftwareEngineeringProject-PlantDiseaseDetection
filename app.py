@@ -83,25 +83,25 @@ def model_predict(img_path, model):
     preds = model.predict(x)
     preds=np.argmax(preds, axis=1)
     if preds==0:
-        preds="The Disease is Tomato Bacterial_spot"
+        preds="Tomato Bacterialn Spot"
     elif preds==1:
-        preds="The Disease is Tomato Early_blight"
+        preds="Tomato Early Blight"
     elif preds==2:
-        preds="The Disease is Tomato Late_blight"
+        preds="Tomato Late Blight"
     elif preds==3:
-        preds="Te Disease is Tomato Leaf_Mold"
+        preds="Tomato Leaf Mold"
     elif preds==4:
-        preds="The Disease is Tomato Septoria_leaf_spot"
+        preds="Tomato Septoria Leaf Spot"
     elif preds==5:
-        preds="The Disease is Tomato Spider_mites Two-spotted_spider_mite"
+        preds="Tomato Spider mites Two-spotted Spider Mite"
     elif preds==6:
-        preds="The Disease is Tomato Target_Spot"
+        preds="Tomato Target Spot"
     elif preds==7:
-        preds="The Disease is Tomato Tomato_Yellow_Leaf_Curl_Virus"
+        preds="Tomato Yellow Leaf Curl Virus"
     elif preds==8:
-        preds="The Disease is Tomato Tomato_mosaic_virus"
+        preds="Tomato Mosaic Virus"
     elif preds==9:
-        preds="The Disease is Tomato healthy"
+        preds="Healthy"
 
     # Saving the search history in the database
     conn=sqlite3.connect('instance/users.db')
@@ -239,6 +239,29 @@ def profile():
     con.execute(stat)
     data = con.fetchall()
     return render_template('profile.html', data=data)
+
+def writeTofile(data, filename):
+    # Convert binary data to proper format and write it on Hard Disk
+    with open(filename, 'wb') as file:
+        file.write(data)
+
+@app.route('/history.html')
+def history():
+    conn=sqlite3.connect('instance/users.db')
+    con=conn.cursor()
+    stat=f"SELECT * FROM history WHERE id_user='{uid}'"
+    con.execute(stat)
+    data = con.fetchall()
+    img=[]
+    for i in data:
+        n=str(i[0])
+        # photoPath = "C:/Users/Sony/Documents/SoftwareEngineeringProject-PlantDiseaseDetection/static/profile_image/" +n + ".jpg" 
+        photoPath = "uploads/" +n + ".jpg" 
+        writeTofile(i[2], photoPath)
+        img+=(photoPath,)
+        # img+=(n+".jpg",)
+    print(img)
+    return render_template('history.html', logs=zip(data, img))
 
 
 @app.route('/update_profile', methods=['GET', 'POST'])
