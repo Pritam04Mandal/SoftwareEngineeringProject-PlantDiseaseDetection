@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Abel&family=Abyssinica+SIL&family=Alumni+Sans+Collegiate+One:ital@1&family=Dancing+Script:wght@400;500;700&family=Libre+Baskerville:ital@0;1&family=Merriweather:ital,wght@1,300&family=Playfair+Display:ital,wght@0,500;0,600;1,400;1,700&family=Poppins:wght@300;400&family=Roboto+Condensed:ital@1&display=swap');
+
 #btn-predict {
   background-color: #4CAF50; /* Green background */
   border: none; /* Remove borders */
@@ -108,3 +110,35 @@ a:hover {
     height: 63vh;
     margin-left: 350px;
   }
+
+  .about-first{
+    font-family: 'Merriweather', serif;
+    font-size: 15px;
+    margin: 0 50px 100px 50px;
+  }
+
+  .about{
+    font-family: 'Merriweather', serif;
+    font-size: 15px;
+    margin: 0 50px 100px 300px;
+  }
+
+  #content{
+    margin-top: 20px;
+  }
+
+#first-logbtn{
+  background-color: #4CAF50; /* Green background */
+border: none; /* Remove borders */
+color: white; /* White text color */
+padding: 12px 24px; /* Add some padding */
+text-align: center; /* Center text */
+text-decoration: none; /* Remove underlines */
+display: inline-block; /* Make it a block element */
+font-size: 16px; /* Set font size */
+border-radius: 6px; /* Add rounded corners */
+transition: background-color 0.3s ease; /* Add transition effect */
+margin-top: 70px;
+margin-bottom: 10px;
+
+}

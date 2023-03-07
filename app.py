@@ -263,6 +263,13 @@ def history():
     print(img)
     return render_template('history.html', logs=zip(data, img))
 
+@app.route('/about.html')
+def about():
+    return render_template('about.html')
+
+@app.route('/contact.html')
+def contact():
+    return render_template('contact.html')
 
 @app.route('/update_profile', methods=['GET', 'POST'])
 def update_profile():

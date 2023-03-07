@@ -79,8 +79,11 @@ footer{
     background-color: 4C9A2A; 
     margin:0px;
     width: 100%;
+    position: fixed;
     text-align: center;
-    padding-top: 5px;font-family: 'Libre Baskerville', serif;
+    padding-top: 5px;
+    font-family: 'Libre Baskerville', serif;
+    color: #fff7e7;
 }
 
 .upload-heading{
@@ -88,4 +91,24 @@ footer{
     /* background-color: #77d11b; */
     width: fit-content;
     font: 25px 'Playfair Display';  
+}
+
+.mid{
+    margin-left: 250px;
+}
+
+#first-logbtn{
+    background-color: #4CAF50; /* Green background */
+  border: none; /* Remove borders */
+  color: white; /* White text color */
+  padding: 12px 24px; /* Add some padding */
+  text-align: center; /* Center text */
+  text-decoration: none; /* Remove underlines */
+  display: inline-block; /* Make it a block element */
+  font-size: 16px; /* Set font size */
+  border-radius: 6px; /* Add rounded corners */
+  transition: background-color 0.3s ease; /* Add transition effect */
+  margin-top: 110px;
+  margin-bottom: 40px;
+  
 }

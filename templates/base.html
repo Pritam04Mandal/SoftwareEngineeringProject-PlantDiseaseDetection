@@ -12,26 +12,26 @@
 </head>
 
 <body>
-    <!-- <center><h1 style="height:50px;font-style:italic;background-color: 4C9A2A; margin:0px;">Leaf Curo</h1>
-    </center> -->
+    <nav>
     <div class="nav-top">
         <h1>Leaf Curo</h1>
     </div>
+</nav>
     
-    <div id="mySidenav" class="sidenav"">
+    <div id="mySidenav" class="sidenav">
         <!-- <a href="javascript:void(0)" >&times;</a> -->
         <a style="padding-top:0px;" href="profile.html"><img src="https://cdn-icons-png.flaticon.com/512/190/190683.png" alt="Logo" style="height: 70px;"></a>
         <a href="logout" style="font-size: 15px; color: red;">Logout</a>
         <a href="/">Home</a>
-        <a href="#">About</a>
+        <a href="about.html">About</a>
         <a href="https://icar.org.in/">ICAR</a>
         <a href="https://www.indiastat.com/data/agriculture/tomato">Stats</a>
         <a href="history.html">History</a>
-        <a href="#">Contact</a>
+        <a href="contact.html">Contact</a>
       </div>
       <center>
       <div class="container">
-          <div id="content" style="margin-top:0.5em">{% block content %}{% endblock %}</div>
+          <div id="content" >{% block content %}{% endblock %}</div>
       </div> 
     </center>
 </body>
