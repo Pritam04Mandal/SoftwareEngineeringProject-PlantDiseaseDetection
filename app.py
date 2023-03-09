@@ -241,7 +241,6 @@ def profile():
     stat=f"SELECT * FROM profile WHERE userid='{uid}'"
     con.execute(stat)
     p = con.fetchall()
-    print(m,p)
     return render_template('profile.html', data=zip(m,p))
 
 def writeTofile(data, filename):
