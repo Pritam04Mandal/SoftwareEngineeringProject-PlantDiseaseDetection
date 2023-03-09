@@ -312,7 +312,3 @@ def update_profile():
 def logout():
     session.pop('username', None)
     return render_template('first.html')
-
-
-if __name__ == '__main__':
-    app.run(debug=True)
