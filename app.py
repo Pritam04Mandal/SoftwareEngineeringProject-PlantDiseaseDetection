@@ -235,10 +235,14 @@ def signup():
 def profile():
     conn=sqlite3.connect('instance/users.db')
     con=conn.cursor()
+    stat=f"SELECT * FROM members WHERE user_id='{uid}'" 
+    con.execute(stat)
+    m = con.fetchall()
     stat=f"SELECT * FROM profile WHERE userid='{uid}'"
     con.execute(stat)
-    data = con.fetchall()
-    return render_template('profile.html', data=data)
+    p = con.fetchall()
+    print(m,p)
+    return render_template('profile.html', data=zip(m,p))
 
 def writeTofile(data, filename):
     # Convert binary data to proper format and write it on Hard Disk

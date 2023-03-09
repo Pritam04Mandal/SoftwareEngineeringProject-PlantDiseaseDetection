@@ -27,24 +27,19 @@
         <img src="https://cdn-icons-png.flaticon.com/512/190/190683.png" alt="Your Image" style="height: 70px;"/>
     </label>
 </form>
-    <br/><br/><br/><br/>
+    <br/><br/>
     <center>
     <div class="input-container">
-      {% if data %}
+      {% for m,p in data %}
+      Username: {{m[1]}}<br><br><br>
         
-      <label for="name">Name:</label>
-      <input type="text" name = "name" id="name" placeholder={{data[0][1]}}>
-        <br/><br/>
-        <label for="job">Profession:</label>
-        <input type="text" name = "Profession" id="job" placeholder={{data[0][3]}}>
-        <br/><br/>
-        <label for="city">City:</label>
-        <input type="text" name = "city" id="city" placeholder={{data[0][4]}}>
-        <br/><br/>
-        <label for="mobno">Mobile No(Optional):</label>
-        <input type="tel" name = "phone" id="mobno" placeholder={{data[0][2]}}>
+      Name: {{p[1]}} <br>
+      Profession: {{p[3]}} <br>
+      City: {{p[4]}} <br>
+      Mobile no: {{p[2]}} <br>
+      {% endfor %}
+      
         <br/><br/><br/>
-        {% else %}
         <label for="name">Name:</label>
         <input type="text" name = "name" id="name">
           <br/><br/>
@@ -57,8 +52,6 @@
           <label for="mobno">Mobile No(Optional):</label>
           <input type="tel" name = "phone" id="mobno">
           <br/><br/><br/>
-        
-      {% endif %}
           <!-- <label for="applang">Select Your Preferred Language</label>
             <select name="applang" id="applang">
               <option value="eng">English</option>
@@ -66,7 +59,6 @@
               <option value="punjabi">Punjabi</option>
               <option value="marathi">Marathi</option>
             </select> -->
-            <br/><br/><br/>
             <button type="button" class="my-button" id="contact-btn" onclick="load_content()">Update Profile</button>
       
       </center>
