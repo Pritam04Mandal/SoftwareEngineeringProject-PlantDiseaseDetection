@@ -63,6 +63,7 @@ multidict
 nest-asyncio
 networkx
 numba
+numpy
 oauthlib
 onnxruntime
 opencv-python-headless
