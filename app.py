@@ -33,7 +33,7 @@ from flask import session
 
 # Define a flask app
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///Users.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = 'secret_key'
 app.app_context().push()
@@ -131,6 +131,12 @@ def upload():
         inpt=Image.open(file_path)
         if(".jpg" in f.filename):
             temp=f.filename.replace(".jpg",".png")
+        elif(".JPG" in f.filename):
+            temp=f.filename.replace(".JPG",".png")
+        elif(".jpeg" in f.filename):
+            temp=f.filename.replace(".jpeg",".png")
+        elif(".JPEG" in f.filename):
+            temp=f.filename.replace(".JPEG",".png")
         else:
             temp=f.filename
         new_path=os.path.join(basepath,'uploads',secure_filename(temp))
