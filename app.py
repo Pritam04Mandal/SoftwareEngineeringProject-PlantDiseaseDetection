@@ -9,6 +9,7 @@ import tensorflow as tf
 import tensorflow as tf
 from PIL import Image
 from rembg import remove
+from pymongo import MongoClient
 # Keras
 # from tensorflow.keras.applications.resnet50 import preprocess_input
 from tensorflow.keras.models import load_model
@@ -29,6 +30,11 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = 'secret_key'
+mongo=MongoClient("mongodb+srv://root:2506@cluster0.3azljoe.mongodb.net/?retryWrites=true&w=majority")
+dbb=mongo.get_database("LoginDetails")
+user=dbb.get_collection("users")
+members=dbb.get_collection("members")
+history=dbb.get_collection("history")
 app.app_context().push()
 
 db = SQLAlchemy(app)
@@ -99,7 +105,7 @@ def model_predict(img_path, model):
     # Saving the search history in the database
     conn=sqlite3.connect('instance/users.db')
     con=conn.cursor()
-    sqlite_insert_blob_query = " INSERT INTO history (id_user, image_url, disease, date_time) VALUES (?, ?, ?, ?)"
+    # sqlite_insert_blob_query = " INSERT INTO history (id_user, image_url, disease, date_time) VALUES (?, ?, ?, ?)"
 
     empPhoto = convertToBinaryData(img_path)
     data_tuple = (uid,empPhoto,preds, datetime.now())
@@ -192,18 +198,27 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        if check_password(username, password):
-            session['username'] = username
-            conn=sqlite3.connect('instance/users.db')
-            con=conn.cursor()
-            stat=f"SELECT user_id FROM members WHERE username='{username}'"
-            con.execute(stat)
+        # if check_password(username, password):
+        #     session['username'] = username
+        #     conn=sqlite3.connect('instance/users.db')
+        #     con=conn.cursor()
+        #     stat=f"SELECT user_id FROM members WHERE username='{username}'"
+        #     con.execute(stat)
+        #     global uid
+        #     uid=con.fetchone()[0]
+        #     print(uid)
+        #     return redirect(url_for('home'))
+        # else:
+        #     return render_template('login.html', err=True)
+        loginuser = user.find_one({"username":username})
+        passwrd=loginuser['password']
+        if bcrypt.check_password_hash(passwrd,password):
+            session['username']=username
             global uid
-            uid=con.fetchone()[0]
-            print(uid)
+            uid=loginuser['_id']
             return redirect(url_for('home'))
         else:
-            return render_template('login.html', err=True)
+            return render_template('login.html',err=True)
     else:
         return render_template('login.html')
 
@@ -214,32 +229,52 @@ def signup():
         email = request.form['email']
         username = request.form['username']
         password = request.form['password']
-        if Members_exists(email, username):
-            return render_template('signup.html', err=True)
-        else:
-            create_Members(email, username, password)
-            session['username'] = username
-            conn=sqlite3.connect('instance/users.db')
-            con=conn.cursor()
-            stat=f"SELECT user_id FROM members WHERE username='{username}'"
+    #     if Members_exists(email, username):
+    #         return render_template('signup.html', err=True)
+    #     else:
+    #         create_Members(email, username, password)
+    #         session['username'] = username
+    #         conn=sqlite3.connect('instance/users.db')
+    #         con=conn.cursor()
+    #         stat=f"SELECT user_id FROM members WHERE username='{username}'"
+    #         global uid
+    #         con.execute(stat)
+    #         uid=con.fetchone()[0]
+    #         return redirect(url_for('home'))
+    # else:
+    #     return render_template('signup.html')
+        exisistinguser=user.find_one({"username":username})
+        if exisistinguser is None:
+            hash_pass=bcrypt.generate_password_hash(password)
+            user.insert_one({"username":username,"email":email,"password":hash_pass})
+            loginuser=user.find_one({"username":username})
             global uid
-            con.execute(stat)
-            uid=con.fetchone()[0]
+            uid=loginuser['_id']
+            members.insert_one({"_id":uid,"full_name":"","mobile_no":"","profession":"","city":"","pre_lang":"","pro_pic":""})
+            session['username']=username
             return redirect(url_for('home'))
+        else:
+            return render_template('signup.html',err=True)
     else:
         return render_template('signup.html')
 
 
 @app.route('/profile.html')
 def profile():
-    conn=sqlite3.connect('instance/users.db')
-    con=conn.cursor()
-    stat=f"SELECT * FROM members WHERE user_id='{uid}'" 
-    con.execute(stat)
-    m = con.fetchall()
-    stat=f"SELECT * FROM profile WHERE userid='{uid}'"
-    con.execute(stat)
-    p = con.fetchall()
+    # conn=sqlite3.connect('instance/users.db')
+    # con=conn.cursor()
+    # stat=f"SELECT * FROM members WHERE user_id='{uid}'" 
+    # con.execute(stat)
+    # m = con.fetchall()
+    # stat=f"SELECT * FROM profile WHERE userid='{uid}'"
+    # con.execute(stat)
+    # p = con.fetchall()
+    mm=user.find_one({"_id":uid})
+    temp1=(mm["_id"],mm["username"],mm["email"],mm["password"])
+    pp=members.find_one({"_id":uid})
+    temp2=(pp["_id"],pp["full_name"],pp["mobile_no"],pp["profession"],pp["city"],pp["pre_lang"],pp["pro_pic"])
+    m=[temp1]
+    p=[temp2]
     return render_template('profile.html', data=zip(m,p))
 
 def writeTofile(data, filename):
@@ -247,8 +282,8 @@ def writeTofile(data, filename):
     with open(filename, 'wb') as file:
         file.write(data)
 
-@app.route('/history.html')
-def history():
+# @app.route('/history.html')
+"""def history():
     conn=sqlite3.connect('instance/users.db')
     con=conn.cursor()
     stat=f"SELECT * FROM history WHERE id_user='{uid}'"
@@ -263,7 +298,7 @@ def history():
         img+=(photoPath,)
         # img+=(n+".jpg",)
     print(img)
-    return render_template('history.html', logs=zip(data, img))
+    # return render_template('history.html', logs=zip(data, img)"""
 
 @app.route('/about.html')
 def about():
@@ -284,19 +319,28 @@ def update_profile():
         print(uname, job, city, phone)
         if(uname==None or job==None or city==None):
             return render_template('profile.html', err=True)
-        conn=sqlite3.connect('instance/users.db')
-        con=conn.cursor()
-        sq=f"DELETE FROM profile WHERE userid={uid}"
-        con.execute(sq)
-        sqlite_insert_blob_query = " INSERT INTO profile (userid, full_name, mobile_no, profession,city,pre_lang,pro_pic) VALUES (?, ?, ?, ?, ?, ?, ?)"
-        empPhoto = convertToBinaryData("C:/Users/Sony/Documents/SoftwareEngineeringProject-PlantDiseaseDetection/img/farmer-image.png")
+        # conn=sqlite3.connect('instance/users.db')
+        # con=conn.cursor()
+        # sq=f"DELETE FROM profile WHERE userid={uid}"
+        # con.execute(sq)
+        # sqlite_insert_blob_query = " INSERT INTO profile (userid, full_name, mobile_no, profession,city,pre_lang,pro_pic) VALUES (?, ?, ?, ?, ?, ?, ?)"
+        basepath = os.path.dirname(__file__)
+        file_path = os.path.join(
+            basepath, 'img',"farmer-image.png")
+        empPhoto = convertToBinaryData("/home/pritam/Documents/SoftwareEngineeringProject-PlantDiseaseDetection/img/farmer-image.png")
         print(uid) 
         data_tuple = (uid,uname, phone, job,city,"ENGLISH",empPhoto)
-        con.execute(sqlite_insert_blob_query, data_tuple)
-        conn.commit()
-        stat=f"SELECT * FROM profile WHERE userid='{uid}'"
-        con.execute(stat)
-        data = con.fetchall()
+        members.update_one({"_id":uid},{"$set":{"full_name":uname,"mobile_no":phone,"profession":job,"city":city,"pre_lang":"ENGLISH","pro_pic":empPhoto}})
+        # members.find_one_and_delete({"_id":uid})
+        # members.insert_one({"_id":uid,"full_name":uname,"mobile_no":phone,"profession":job,"city":city,"pre_lang":"ENGLISH","pro_pic":empPhoto})
+        # con.execute(sqlite_insert_blob_query, data_tuple)
+        # conn.commit()
+        # stat=f"SELECT * FROM profile WHERE userid='{uid}'"
+        # con.execute(stat)
+        # data = con.fetchall()
+        finduser=members.find_one({"_id":uid})
+        temp=(finduser["_id"],finduser["full_name"],finduser["mobile_no"],finduser["profession"],finduser["city"],finduser["pre_lang"],finduser["pro_pic"])
+        data=[temp]
         return render_template('profile.html', data=data)
     else:
         return render_template('signup.html')
